@@ -1,8 +1,3 @@
-/********* definitions.c ********
-    Student Name 	= Abdalla Omar
-    Student Number	= 101261926
-*/
-
 #include <stdlib.h>
 #include "assert.h"
 #include <stdio.h>
