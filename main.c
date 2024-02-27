@@ -1,7 +1,4 @@
-/********* main.c ********
-    Student Name 	= Abdalla Omar
-    Student Number	= 101261926
-*/
+/********* main.c *********/
 
 // Includes go here
 #include <stdlib.h>
@@ -13,7 +10,6 @@
 
 int main()
 {
-    /******** DONT MODIFY THIS PART OF THE CODE ********/
     /* THIS CODE WILL LOAD THE DATABASE OF USERS FROM THE FILE
        AND GENERATE THE STARTING LINKED LIST.
     */
@@ -27,7 +23,6 @@ int main()
     user_t *users = read_CSV_and_create_users(csv_file, 50);
 
     fclose(csv_file);
-    /******** DONT MODIFY THIS PART OF THE CODE ********/
 
     /* IMPORTANT: You must use the users linked list created in the code above.
                   Any new users should be added to that linked list.
@@ -44,8 +39,8 @@ int main()
     unsigned short int option;      // user ediditing sub menu
     unsigned short int option2;     // for sub menu choice is choice 2
     unsigned short int option3;     // for sub menu choice is choice 3
-    char name[30];
-    char pass[15];
+    char name[30];                  // to store name
+    char pass[15];                  // to store pass
 
     printf("\n**********************************************\n");
     printf("\t Welcome to Text-Based Facebook \n");
