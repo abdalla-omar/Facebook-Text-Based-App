@@ -1,12 +1,7 @@
-/********* functions.h ********
-    Student Name 	= Abdalla Omar
-    Student Number	= 101261926
-*/
 #ifndef __A3_FUNCTIONS_H__
 #define __A3_FUNCTIONS_H__
 #include "a3_nodes.h"
 
-/********** DON'T MODIFY **********/
 /*
    Function that creates a new user and adds it to a sorted (ascending order) linked list at
    the proper sorted location. Return the head of the list.
