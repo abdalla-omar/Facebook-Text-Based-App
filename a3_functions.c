@@ -406,10 +406,8 @@ void print_menu()
 
 
 /*
-   ******** DONT MODIFY THIS FUNCTION ********
    Function that reads users from the text file.
    IMPORTANT: This function shouldn't be modified and used as is
-   ******** DONT MODIFY THIS FUNCTION ********
 */
 user_t *read_CSV_and_create_users(FILE *file, int num_users)
 {
