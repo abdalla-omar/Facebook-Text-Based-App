@@ -1,70 +1,92 @@
+/*
+ * Network Routing Simulator
+ * A simple network packet routing simulation application
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "a2_functions.h"
+#include <time.h>
+#include "network_functions.h"
 
 int main() {
-    NodeInfo *nodeList = NULL;
-    LinkInfo *linkList = NULL;
+    // Initialize random seed for packet generation
+    srand(time(NULL));
+    
+    // Initialize data structures
+    Node *nodeList = NULL;
+    Link *linkList = NULL;
     InvalidNode *invalidList = NULL;
-    RouteEntry *routeList = NULL;
+    Route *routeList = NULL;
     Packet *packetList = NULL;
     
-    printf("=== Reading Node Information ===\n");
-    if (get_node_info("nodeinfo1.txt", &nodeList) != 0) {
-        fprintf(stderr, "Failed to read node information.\n");
+    printf("\n=== Network Routing Simulator ===\n");
+    
+    // Load network topology
+    printf("\n1. Loading network nodes...\n");
+    if (load_nodes("nodes.txt", &nodeList) != 0) {
+        fprintf(stderr, "Error: Failed to load network nodes.\n");
         return EXIT_FAILURE;
     }
     
-    printf("\n=== Reading Link Information ===\n");
-    if (get_link_info("linkinfo1.txt", &linkList, &invalidList, nodeList) != 0) {
-        fprintf(stderr, "Failed to read link information.\n");
+    printf("\n2. Loading network links...\n");
+    if (load_links("links.txt", &linkList, &invalidList, nodeList) != 0) {
+        fprintf(stderr, "Error: Failed to load network links.\n");
         return EXIT_FAILURE;
     }
     
-    printf("\n=== Reading Routing Information ===\n");
-    if (get_route_info("routeinfo1.txt", &routeList) != 0) {
-        fprintf(stderr, "Failed to read routing information.\n");
+    printf("\n3. Loading routing table...\n");
+    if (load_routes("routes.txt", &routeList) != 0) {
+        fprintf(stderr, "Error: Failed to load routing table.\n");
         return EXIT_FAILURE;
     }
     
-    printf("\n=== Generating and Forwarding Packets (Initial Routing) ===\n");
-    // Generate between 10 and 15 packets.
-    int numPackets = 10 + (rand() % 6);
-    if (packet_gen(&packetList, numPackets, nodeList) != 0) {
-        fprintf(stderr, "Failed to generate packets.\n");
+    printf("\n4. Running initial packet simulation...\n");
+    int numPackets = 10 + (rand() % 6);  // Generate 10-15 packets
+    printf("   Generating %d packets...\n", numPackets);
+    
+    if (generate_packets(&packetList, numPackets, nodeList) != 0) {
+        fprintf(stderr, "Error: Failed to generate packets.\n");
         return EXIT_FAILURE;
     }
-    if (packet_forward(packetList, routeList) != 0) {
-        fprintf(stderr, "Failed to forward packets.\n");
+    
+    printf("\n   Forwarding packets through network...\n");
+    if (forward_packets(packetList, routeList) != 0) {
+        fprintf(stderr, "Error: Failed to forward packets.\n");
         return EXIT_FAILURE;
     }
     free_packets(packetList);
     packetList = NULL;
     
-    printf("\n=== Simulating Link Failure and Rerouting ===\n");
-    // Simulate a link failure (for example, between nodeA and nodeB) by reading updated routes.
-    if (get_reroute_info("rerouteinfo.txt", &routeList) != 0) {
-        fprintf(stderr, "Failed to update routing information.\n");
+    printf("\n5. Simulating network failure...\n");
+    printf("   Updating routing table for link failures...\n");
+    
+    if (update_routes("routes_updated.txt", &routeList) != 0) {
+        fprintf(stderr, "Error: Failed to update routing table.\n");
         return EXIT_FAILURE;
     }
     
-    printf("\n=== Generating and Forwarding Packets (After Rerouting) ===\n");
+    printf("\n6. Running post-failure packet simulation...\n");
     numPackets = 10 + (rand() % 6);
-    if (packet_gen(&packetList, numPackets, nodeList) != 0) {
-        fprintf(stderr, "Failed to generate packets.\n");
+    printf("   Generating %d new packets...\n", numPackets);
+    
+    if (generate_packets(&packetList, numPackets, nodeList) != 0) {
+        fprintf(stderr, "Error: Failed to generate packets.\n");
         return EXIT_FAILURE;
     }
-    if (packet_forward(packetList, routeList) != 0) {
-        fprintf(stderr, "Failed to forward packets.\n");
+    
+    printf("\n   Forwarding packets through updated network...\n");
+    if (forward_packets(packetList, routeList) != 0) {
+        fprintf(stderr, "Error: Failed to forward packets.\n");
         return EXIT_FAILURE;
     }
     free_packets(packetList);
     
-    // Free all allocated memory.
+    // Clean up
+    printf("\n7. Cleaning up...\n");
     free_nodes(nodeList);
     free_links(linkList);
     free_routes(routeList);
     
-    printf("\n=== Assignment Completed ===\n");
+    printf("\n=== Simulation Complete ===\n\n");
     return EXIT_SUCCESS;
 }

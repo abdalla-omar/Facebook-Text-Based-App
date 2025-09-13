@@ -1,18 +1,24 @@
+/*
+ * Network Routing Simulator - Function Implementations
+ * Handles network topology loading, packet generation, and routing simulation
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "a2_functions.h"
+#include "network_functions.h"
 
 #define BUFFER_SIZE 100
+#define MAX_NAME_LEN 20
 
 // Helper function: compare node names alphabetically.
 int compare_nodes(const char *a, const char *b) {
     return strcmp(a, b);
 }
 
-// get_node_info: Reads nodes from file and inserts them into a linked list in alphabetical order.
-int get_node_info(const char *filename, NodeInfo **nodeList) {
+/* Load network nodes from file and insert them into a sorted linked list */
+int load_nodes(const char *filename, Node **nodeList) {
     FILE *fp = fopen(filename, "r");
     if (!fp) {
         perror("Error opening node info file");
@@ -38,7 +44,7 @@ int get_node_info(const char *filename, NodeInfo **nodeList) {
         ip[sizeof(ip)-1] = '\0';
         
         // Create and initialize new node.
-        NodeInfo *newNode = (NodeInfo*) malloc(sizeof(NodeInfo));
+        Node *newNode = (Node*) malloc(sizeof(Node));
         if (!newNode) {
             perror("Memory allocation error");
             fclose(fp);
@@ -53,7 +59,7 @@ int get_node_info(const char *filename, NodeInfo **nodeList) {
             newNode->next = *nodeList;
             *nodeList = newNode;
         } else {
-            NodeInfo *current = *nodeList;
+            Node *current = *nodeList;
             while (current->next && compare_nodes(newNode->name, current->next->name) >= 0) {
                 current = current->next;
             }
@@ -68,8 +74,8 @@ int get_node_info(const char *filename, NodeInfo **nodeList) {
 }
 
 // Helper function: returns 1 if the node exists in nodeList.
-int is_valid_node(NodeInfo *nodeList, const char *name) {
-    NodeInfo *current = nodeList;
+int is_valid_node(Node *nodeList, const char *name) {
+    Node *current = nodeList;
     while (current) {
         if (strcmp(current->name, name) == 0)
             return 1;
@@ -88,8 +94,8 @@ int invalid_node_exists(InvalidNode *invalidList, const char *name) {
     return 0;
 }
 
-// get_link_info: Reads link info file and processes valid links; invalid nodes are appended to a separate list.
-int get_link_info(const char *filename, LinkInfo **linkList, InvalidNode **invalidList, NodeInfo *nodeList) {
+/* Load network links from file, validating nodes and tracking invalid ones */
+int load_links(const char *filename, Link **linkList, InvalidNode **invalidList, Node *nodeList) {
     FILE *fp = fopen(filename, "r");
     if (!fp) {
         perror("Error opening link info file");
@@ -128,7 +134,7 @@ int get_link_info(const char *filename, LinkInfo **linkList, InvalidNode **inval
         
         if (srcValid && dstValid) {
             // Create new link node.
-            LinkInfo *newLink = (LinkInfo*) malloc(sizeof(LinkInfo));
+            Link *newLink = (Link*) malloc(sizeof(Link));
             if (!newLink) {
                 perror("Memory allocation error");
                 fclose(fp);
@@ -144,7 +150,7 @@ int get_link_info(const char *filename, LinkInfo **linkList, InvalidNode **inval
             if (*linkList == NULL) {
                 *linkList = newLink;
             } else {
-                LinkInfo *curr = *linkList;
+                Link *curr = *linkList;
                 while (curr->next)
                     curr = curr->next;
                 curr->next = newLink;
@@ -216,8 +222,8 @@ int get_link_info(const char *filename, LinkInfo **linkList, InvalidNode **inval
     return 0;
 }
 
-// get_route_info: Reads routing information and adds each entry at the front of the route list.
-int get_route_info(const char *filename, RouteEntry **routeList) {
+/* Load routing table from file */
+int load_routes(const char *filename, Route **routeList) {
     FILE *fp = fopen(filename, "r");
     if (!fp) {
         perror("Error opening route info file");
@@ -253,7 +259,7 @@ int get_route_info(const char *filename, RouteEntry **routeList) {
         int cost = atoi(token);
         
         // Create and insert new routing entry at the front.
-        RouteEntry *newRoute = (RouteEntry*) malloc(sizeof(RouteEntry));
+        Route *newRoute = (Route*) malloc(sizeof(Route));
         if (!newRoute) {
             perror("Memory allocation error");
             fclose(fp);
@@ -273,8 +279,8 @@ int get_route_info(const char *filename, RouteEntry **routeList) {
     return 0;
 }
 
-// get_reroute_info: Reads updated route information and updates existing entries.
-int get_reroute_info(const char *filename, RouteEntry **routeList) {
+/* Update routing table with new routes (simulating network changes) */
+int update_routes(const char *filename, Route **routeList) {
     FILE *fp = fopen(filename, "r");
     if (!fp) {
         perror("Error opening reroute info file");
@@ -310,7 +316,7 @@ int get_reroute_info(const char *filename, RouteEntry **routeList) {
         int newCost = atoi(token);
         
         // Search for the matching route entry.
-        RouteEntry *current = *routeList;
+        Route *current = *routeList;
         int found = 0;
         while (current) {
             if (strcmp(current->src, src) == 0 && strcmp(current->dst, dst) == 0) {
@@ -332,8 +338,8 @@ int get_reroute_info(const char *filename, RouteEntry **routeList) {
     return 0;
 }
 
-// packet_gen: Generates a specified number of random packets using the nodes from nodeList.
-int packet_gen(Packet **packetList, int numPackets, NodeInfo *nodeList) {
+/* Generate random packets between nodes in the network */
+int generate_packets(Packet **packetList, int numPackets, Node *nodeList) {
     if (!nodeList) {
         printf("No nodes available for packet generation.\n");
         return 1;
@@ -341,14 +347,14 @@ int packet_gen(Packet **packetList, int numPackets, NodeInfo *nodeList) {
     
     // Count nodes and build an array for random access.
     int count = 0;
-    NodeInfo *current = nodeList;
+    Node *current = nodeList;
     while (current) {
         count++;
         current = current->next;
     }
     if (count == 0) return 1;
     
-    NodeInfo **nodeArray = malloc(count * sizeof(NodeInfo*));
+    Node **nodeArray = malloc(count * sizeof(Node*));
     if (!nodeArray) {
         perror("Memory allocation error");
         return 1;
@@ -401,8 +407,8 @@ int packet_gen(Packet **packetList, int numPackets, NodeInfo *nodeList) {
 }
 
 // Helper: Find a routing entry for a given source and destination.
-RouteEntry* find_route(RouteEntry *routeList, const char *src, const char *dst) {
-    RouteEntry *current = routeList;
+Route* find_route(Route *routeList, const char *src, const char *dst) {
+    Route *current = routeList;
     while (current) {
         if (strcmp(current->src, src) == 0 && strcmp(current->dst, dst) == 0)
             return current;
@@ -411,8 +417,8 @@ RouteEntry* find_route(RouteEntry *routeList, const char *src, const char *dst) 
     return NULL;
 }
 
-// packet_forward: Simulates forwarding each packet using the routing table.
-int packet_forward(Packet *packetList, RouteEntry *routeList) {
+/* Forward packets through the network using the routing table */
+int forward_packets(Packet *packetList, Route *routeList) {
     int totalPackets = 0;
     int totalSize = 0;
     
@@ -425,7 +431,7 @@ int packet_forward(Packet *packetList, RouteEntry *routeList) {
         
         // Follow the routing table until the destination is reached.
         while (strcmp(currentNode, pkt->dst) != 0) {
-            RouteEntry *route = find_route(routeList, currentNode, pkt->dst);
+            Route *route = find_route(routeList, currentNode, pkt->dst);
             if (!route) {
                 printf("No route found from %s to %s. Dropping packet.\n", currentNode, pkt->dst);
                 break;
@@ -453,8 +459,8 @@ int packet_forward(Packet *packetList, RouteEntry *routeList) {
 }
 
 // Free functions for all linked lists.
-void free_nodes(NodeInfo *nodeList) {
-    NodeInfo *temp;
+void free_nodes(Node *nodeList) {
+    Node *temp;
     while (nodeList) {
         temp = nodeList;
         nodeList = nodeList->next;
@@ -471,8 +477,8 @@ void free_invalid_nodes(InvalidNode *invalidList) {
     }
 }
 
-void free_links(LinkInfo *linkList) {
-    LinkInfo *temp;
+void free_links(Link *linkList) {
+    Link *temp;
     while (linkList) {
         temp = linkList;
         linkList = linkList->next;
@@ -480,8 +486,8 @@ void free_links(LinkInfo *linkList) {
     }
 }
 
-void free_routes(RouteEntry *routeList) {
-    RouteEntry *temp;
+void free_routes(Route *routeList) {
+    Route *temp;
     while (routeList) {
         temp = routeList;
         routeList = routeList->next;

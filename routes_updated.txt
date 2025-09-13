@@ -1,0 +1,11 @@
+Router1;Router2;Router3;20
+Router1;Router4;Router3;25
+Router2;Router1;Router3;20
+Router2;Router4;Router3;15
+Router3;Router1;Router2;20
+Router3;Router4;Router5;35
+Router4;Router1;Router3;25
+Router4;Router2;Router3;15
+Client1;Router2;Gateway;22
+Client2;Router2;Gateway;22
+Gateway;Router2;Router1;20

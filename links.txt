@@ -1,0 +1,14 @@
+Router1;Router2;10;1000
+Router1;Router3;15;1000
+Router2;Router3;5;500
+Router2;Router4;20;1000
+Router3;Router4;10;500
+Router3;Router5;25;1000
+Router4;Router5;15;1000
+Router1;Gateway;5;10000
+Router5;Server1;5;1000
+Router5;Server2;5;1000
+Gateway;Client1;2;100
+Gateway;Client2;2;100
+InvalidNode1;Router1;10;100
+Router2;InvalidNode2;15;200
