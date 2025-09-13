@@ -1,0 +1,33 @@
+# Compiled executables
+network_simulator
+*.exe
+*.out
+a.out
+
+# Object files
+*.o
+*.obj
+
+# Debug files
+*.dSYM/
+*.dSYM/*
+*.pdb
+
+# Backup files
+*~
+*.swp
+*.swo
+*.bak
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.code-workspace
+
+# Temporary files
+*.tmp
+*.temp
