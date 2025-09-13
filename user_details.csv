@@ -1,0 +1,50 @@
+Username,Password,Friend1,Friend2,Friend3,Post1,Post2,Post3
+alice_wonder,pass123,bob_builder,charlie_day,diana_prince,Just joined this amazing platform!,Having a great day!,Love connecting with friends
+bob_builder,builder456,alice_wonder,charlie_day,eva_green,Can we fix it? Yes we can!,Building something awesome today,Construction life is the best life
+charlie_day,sunny789,alice_wonder,bob_builder,frank_ocean,It's always sunny somewhere,Wild card!,Day man fighter of the night man
+diana_prince,amazon321,alice_wonder,eva_green,frank_ocean,Training hard today,Justice for all,Wonderful day to save the world
+eva_green,green654,bob_builder,diana_prince,george_king,Nature is beautiful,Going green every day,Sustainability matters
+frank_ocean,ocean987,charlie_day,diana_prince,harry_potter,New music coming soon,Riding through the city,Thinking about you
+george_king,king123,eva_green,harry_potter,irene_adler,Ruling my kingdom,Royal duties never end,Crown weighs heavy
+harry_potter,magic777,frank_ocean,george_king,irene_adler,Expecto Patronum!,Missing Hogwarts,Magic is real if you believe
+irene_adler,clever888,george_king,harry_potter,jane_doe,The game is on,Always one step ahead,Mystery is my middle name
+jane_doe,simple111,irene_adler,kevin_hart,lisa_simpson,Just an ordinary day,Simple pleasures in life,Anonymity has its perks
+kevin_hart,funny222,jane_doe,lisa_simpson,mike_ross,Laughter is the best medicine,Short jokes are not funny!,Stand up life
+lisa_simpson,smart333,jane_doe,kevin_hart,nancy_drew,Straight A's again!,Reading changes lives,Knowledge is power
+mike_ross,suits444,kevin_hart,nancy_drew,olivia_pope,Photographic memory pays off,Law and order,Suits up!
+nancy_drew,mystery555,lisa_simpson,mike_ross,olivia_pope,Another case solved,Clues are everywhere,Detective work never stops
+olivia_pope,fixer666,mike_ross,nancy_drew,peter_parker,It's handled,White hat life,Crisis management expert
+peter_parker,spider999,olivia_pope,quinn_value,rachel_green,With great power...,Friendly neighborhood hero,Web slinging through NYC
+quinn_value,value000,peter_parker,rachel_green,steve_jobs,Creating value everywhere,Innovation is key,Think different
+rachel_green,fashion123,peter_parker,quinn_value,steve_jobs,Fashion week ready!,Coffee at Central Perk,We were on a break!
+steve_jobs,apple456,quinn_value,rachel_green,tony_stark,Stay hungry stay foolish,Design is everything,One more thing...
+tony_stark,iron789,steve_jobs,uma_thurman,victor_hugo,I am Iron Man,Genius billionaire philanthropist,Arc reactor powered
+uma_thurman,kill000,tony_stark,victor_hugo,walter_white,Action speaks louder,Revenge is a dish...,Yellow jumpsuit day
+victor_hugo,poet111,tony_stark,uma_thurman,walter_white,Words have power,Les Miserables forever,Poetry in motion
+walter_white,chem222,uma_thurman,victor_hugo,xena_warrior,Science is fascinating,Chemistry is not a crime,I am the one who knocks
+xena_warrior,warrior333,walter_white,yoda_master,zoe_barnes,Battle cry!,Warrior princess life,Fighting for justice
+yoda_master,force444,xena_warrior,zoe_barnes,alice_wonder,Do or do not,Strong in force you are,900 years of wisdom
+zoe_barnes,journal555,xena_warrior,yoda_master,bob_builder,Breaking news!,Journalism matters,Truth will prevail
+admin_user,admin123,alice_wonder,bob_builder,charlie_day,Welcome to Text-Facebook!,System maintenance complete,Happy networking everyone!
+test_user,test456,admin_user,alice_wonder,diana_prince,Testing the system,Everything works great,QA approved!
+john_smith,john789,test_user,admin_user,eva_green,Hello world!,First post excitement,Making new connections
+mary_jane,mj123,john_smith,peter_parker,frank_ocean,Photography is my passion,Captured a perfect sunset,Life through a lens
+bruce_wayne,batman456,tony_stark,diana_prince,peter_parker,Not the hero Gotham deserves,Night shift again,Alfred makes the best tea
+clark_kent,super789,bruce_wayne,diana_prince,peter_parker,Metropolis news update,Flying high today,Truth justice and hope
+natasha_rom,widow000,bruce_wayne,tony_stark,steve_jobs,Stealth mode activated,Red in my ledger,Trust is earned
+thor_odin,hammer111,tony_stark,bruce_wayne,natasha_rom,Worthy of Mjolnir,Asgard forever,Thunder and lightning
+loki_tricks,mischief222,thor_odin,natasha_rom,victor_hugo,Glorious purpose!,Tricks and illusions,Bow before me
+gandalf_grey,wizard333,yoda_master,harry_potter,victor_hugo,You shall not pass!,Grey to white,Middle Earth chronicles
+sherlock_h,deduce444,irene_adler,nancy_drew,mike_ross,Elementary my dear,The game is afoot,Observation is key
+john_watson,doctor555,sherlock_h,bruce_wayne,harry_potter,Medical mysteries,Army days memories,221B Baker Street
+hermione_g,books666,harry_potter,lisa_simpson,nancy_drew,Library is my home,S.P.E.W. forever,Revision time again
+ron_weasley,chess777,harry_potter,hermione_g,kevin_hart,Wizard chess champion,Weasley is our king,Food is life
+tony_soprano,family888,mike_ross,walter_white,victor_hugo,Family first always,Waste management life,Respect the business
+walter_jr,breakfast999,walter_white,lisa_simpson,jane_doe,Breakfast is important,Family matters most,Growing up fast
+saul_good,lawyer000,walter_white,mike_ross,olivia_pope,Better call me!,Legal advice 24/7,Constitution matters
+jesse_pink,yeah123,walter_white,saul_good,steve_jobs,Science rules!,Yeah Mr White!,Cooking is an art
+monica_gel,clean456,rachel_green,jane_doe,lisa_simpson,Organization is key,Cleanliness matters,Chef Monica reporting
+chandler_b,jokes789,monica_gel,rachel_green,kevin_hart,Could I BE more funny?,Statistical analysis humor,Sarcasm is my language
+joey_trib,food000,chandler_b,monica_gel,rachel_green,How you doin'?,Pizza is life,Acting is my passion
+phoebe_buf,music111,monica_gel,rachel_green,joey_trib,Smelly cat song,Music heals souls,Quirky and proud
+ross_geller,dino222,rachel_green,monica_gel,chandler_b,Paleontology rocks!,We were on a break!,Dinosaurs are fascinating
