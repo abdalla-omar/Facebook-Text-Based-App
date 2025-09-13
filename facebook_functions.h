@@ -1,6 +1,7 @@
-#ifndef __A3_FUNCTIONS_H__
-#define __A3_FUNCTIONS_H__
-#include "a3_nodes.h"
+#ifndef FACEBOOK_FUNCTIONS_H
+#define FACEBOOK_FUNCTIONS_H
+
+#include "facebook_types.h"
 
 /*
    Function that creates a new user and adds it to a sorted (ascending order) linked list at
@@ -82,8 +83,7 @@ void teardown(user_t *users);
 void print_menu();
 
 /* 
-   Function that reads users from the text file.
-   IMPORTANT: This function shouldn't be modified and used as is
+   Function that reads users from a CSV file and creates the initial user database
 */
 user_t *read_CSV_and_create_users(FILE *file, int num_users);
 
@@ -92,20 +92,21 @@ user_t *read_CSV_and_create_users(FILE *file, int num_users);
 */
 void main_menu();
 
-//checks if a friend exists, return true if they do, false otherwise
+/*
+   Function that checks if a friend exists in a user's friend list
+   Returns true if they exist, false otherwise
+*/
 _Bool friend_exist(user_t *user, char *friend);
 
-//changes character from any case to lower case for comparision in find user
+/*
+   Function that converts a string to lowercase for case-insensitive comparison
+*/
 void lower(char *name);
 
 /*
-   used when looking to add a new user, ensuring no duplicates
-   Function that searches if the user is available in the database
-   Return a pointer to the user if found and NULL if not found.
-   Checks to make sure that there aren't any duplicate users. 
-   ex. if username = ginnylupin, NULL is returned
+   Function that performs case-insensitive user search to prevent duplicate accounts
+   Returns a pointer to the user if found (regardless of case), NULL otherwise
 */
 user_t *find_user2(user_t *users, const char *username);
 
-
-#endif
+#endif /* FACEBOOK_FUNCTIONS_H */

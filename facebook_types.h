@@ -1,7 +1,8 @@
-/********* nodes.h *********/
-#ifndef __A3_NODES_H__
-#define __A3_NODES_H__
-// Structure to represent a linked list of users
+#ifndef FACEBOOK_TYPES_H
+#define FACEBOOK_TYPES_H
+/* Data structures for the Text-Based Facebook application */
+
+/* User structure representing a person in the social network */
 typedef struct user
 {
     char username[30];
@@ -11,7 +12,7 @@ typedef struct user
     struct user *next;
 } user_t;
 
-// Structure to represent linked list of a user's posts
+/* Friend structure representing a connection between users */
 typedef struct friend
 {
     char username[30];
@@ -20,12 +21,11 @@ typedef struct friend
 }
 friend_t;
 
-// Structure to represent linked list of a user's posts
+/* Post structure representing user-generated content */
 typedef struct post
 {
     char content[250];
     struct post *next;
 } post_t;
 
-
-#endif
+#endif /* FACEBOOK_TYPES_H */

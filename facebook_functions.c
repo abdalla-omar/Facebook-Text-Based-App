@@ -2,11 +2,11 @@
 #include "assert.h"
 #include <stdio.h>
 #include <string.h>
-#include "a3_nodes.h"
-#include "a3_functions.h"
+#include "facebook_types.h"
+#include "facebook_functions.h"
 #include <stdbool.h>
 
-// Your solution goes here
+/* Function implementations for the Text-Based Facebook application */
 
 /*
    Function that creates a new user and adds it to a sorted (ascending order) linked list at
@@ -14,11 +14,9 @@
 */
 user_t *add_user(user_t *users, const char *username, const char *password)
 {
-   // using to iterate over linked list
-   user_t *temp = malloc(sizeof(user_t));
-   assert(temp != NULL);
-
-   // creating new node
+   user_t *temp;
+   
+   // Create new user node
    user_t *new_node = malloc(sizeof(user_t));
    assert(new_node != NULL);
    strcpy(new_node->username, username);
@@ -27,41 +25,33 @@ user_t *add_user(user_t *users, const char *username, const char *password)
    new_node->friends = NULL;
    new_node->next = NULL;
 
-   // case 1: no users in the linked list
+   // Case 1: Empty list
    if (users == NULL)
    {
-      users = new_node;
-      return users;
+      return new_node;
    }
 
-   // case 2: adding at the begining of linked list
-   else if (strcmp(users->username, username) > 0)
+   // Case 2: Insert at beginning
+   if (strcmp(users->username, username) > 0)
    {
       new_node->next = users;
-      users = new_node;
-      return users;
+      return new_node;
    }
 
-   else
+   // Case 3: Insert in middle or at end
+   for (temp = users; temp->next != NULL; temp = temp->next)
    {
-      for (temp = users; temp->next != NULL; temp = temp->next)
+      if (strcmp(temp->next->username, username) > 0)
       {
-         // case 3: when adding in the middle of linked
-         if (strcmp(temp->next->username, username) > 0)
-         {
-            new_node->next = temp->next;
-            temp->next = new_node;
-            return users;
-         }
-      }
-
-      // case 4: When adding at the end of the linked list
-      if (temp->next == NULL)
-      {
+         new_node->next = temp->next;
          temp->next = new_node;
          return users;
       }
    }
+
+   // Case 4: Insert at end
+   temp->next = new_node;
+   return users;
 }
 /*
    Function that searches if the user is available in the database
@@ -69,25 +59,17 @@ user_t *add_user(user_t *users, const char *username, const char *password)
 */
 user_t *find_user(user_t *users, const char *username)
 {
-   user_t *temp = malloc(sizeof(user_t));
-   assert(temp != NULL);
+   user_t *temp;
 
-   if (users == NULL)
-      temp = NULL;
-
-   else
-      for (temp = users; temp != NULL; temp = temp->next)
+   for (temp = users; temp != NULL; temp = temp->next)
+   {
+      if (strcmp(temp->username, username) == 0)
       {
-
-         // we store in new variable since we dont want to modify original expressio (temp->username)
-         //  The username is a const meaning we cant chnage, this copy it elsewhere
-         if (strcmp(temp->username, username) == 0)
-         {
-            return temp;
-         }
+         return temp;
       }
-   temp = NULL;
-   return temp;
+   }
+   
+   return NULL;
 }
 /*
    Function that creates a new friend's node.
@@ -111,52 +93,47 @@ friend_t *create_friend(const char *username)
 */
 void add_friend(user_t *user, const char *friend, user_t *head)
 {
-   // checking if friend exists
+   // Check if friend exists in the user database
    user_t *check = find_user(head, friend);
-
    if (check == NULL)
    {
       return;
    }
 
-   friend_t *temp = malloc(sizeof(friend_t));
-   assert(temp != NULL);
-
-   // creating new friend
+   friend_t *temp;
+   
+   // Create new friend node
    friend_t *friend_to_insert = create_friend(friend);
+   friend_to_insert->posts = &(check->posts);
 
-   // Case 1: when we have 0 friends in the friends linked list
+   // Case 1: Empty friends list
    if (user->friends == NULL)
    {
       user->friends = friend_to_insert;
+      return;
    }
 
-   // case 2: adding at the begining of linked list
-   else if (strcmp(user->friends->username, friend) > 0)
+   // Case 2: Insert at beginning
+   if (strcmp(user->friends->username, friend) > 0)
    {
       friend_to_insert->next = user->friends;
       user->friends = friend_to_insert;
+      return;
    }
-   else
+   
+   // Case 3: Insert in middle or at end
+   for (temp = user->friends; temp->next != NULL; temp = temp->next)
    {
-      // Case 3: Adding at middle of linked list
-      for (temp = user->friends; temp->next != NULL; temp = temp->next)
+      if (strcmp(temp->next->username, friend) > 0)
       {
-         if (strcmp(temp->next->username, friend) > 0)
-         {
-            friend_to_insert->next = temp->next;
-            temp->next = friend_to_insert;
-            return;
-         }
-      }
-      // case 4: Adding at the end of linked list
-      if (temp->next == NULL)
-      {
+         friend_to_insert->next = temp->next;
          temp->next = friend_to_insert;
+         return;
       }
    }
-   friend_to_insert->posts = &(check->posts);
-   return;
+   
+   // Case 4: Insert at end
+   temp->next = friend_to_insert;
 }
 
 /*
@@ -165,45 +142,37 @@ void add_friend(user_t *user, const char *friend, user_t *head)
 */
 _Bool delete_friend(user_t *user, char *friend_name)
 {
+   friend_t *temp;
+   friend_t *to_delete;
 
-   // to iterate over friends linked list
-   friend_t *temp = malloc(sizeof(friend_t));
-   assert(temp != NULL);
-
-   // to free up the deleted user
-   friend_t *free_node = malloc(sizeof(friend_t));
-   assert(free_node != NULL);
-
-   // case 1: user has no friends
+   // Case 1: Empty friends list
    if (user->friends == NULL)
    {
       return false;
    }
 
-   // case 2: user is at beginning of list
+   // Case 2: Delete first friend
    if (strcmp(user->friends->username, friend_name) == 0)
    {
-      temp = user->friends;
+      to_delete = user->friends;
       user->friends = user->friends->next;
-      temp->next = NULL;
-      free(temp);
+      free(to_delete);
       return true;
    }
 
-   // case 3: is user is not at 1st element, i.e. any other position
+   // Case 3: Delete friend in middle or at end
    for (temp = user->friends; temp->next != NULL; temp = temp->next)
    {
       if (strcmp(temp->next->username, friend_name) == 0)
       {
-         free_node = temp->next;
+         to_delete = temp->next;
          temp->next = temp->next->next;
-         free_node->next = NULL;
-         free(free_node);
+         free(to_delete);
          return true;
       }
    }
 
-   // case 4: when friend isn't found
+   // Case 4: Friend not found
    return false;
 }
 
@@ -240,55 +209,39 @@ void add_post(user_t *user, const char *text)
 */
 _Bool delete_post(user_t *user, int number)
 {
-   // case 1: if user has no friends
+   post_t *temp;
+   post_t *to_delete;
+   int i;
+
+   // Case 1: Empty posts list
    if (user->posts == NULL)
    {
       return false;
    }
 
-   // counter to make sure i'm matching the position of post to delete
-   int i = 1;
-
-   // to iterate over friends linked list
-   post_t *temp = malloc(sizeof(post_t));
-   assert(temp != NULL);
-
-   // to free up the deleted user
-   post_t *free_post = malloc(sizeof(post_t));
-   assert(free_post != NULL);
-
-   for (temp = user->posts; temp != NULL; i++, temp = temp->next)
+   // Case 2: Delete first post
+   if (number == 1)
    {
-      // case 2: deleting first post
-      if (number == 1)
-      {
-         // case 2.1: if there's only 1 post
-         if (user->posts->next == NULL)
-         {
-            free(user->posts);
-            user->posts = NULL;
-         }
-         // case 2.2: many posts
-         else
-         {
-            user->posts = user->posts->next;
-            free(temp);
-            temp = NULL;
-         }
-         return true;
-      }
+      to_delete = user->posts;
+      user->posts = user->posts->next;
+      free(to_delete);
+      return true;
+   }
 
-      // case 3: removing at rest of list (position 2 and greater)
-      else if (number == i + 1)
+   // Case 3: Delete post at position 2 or greater
+   i = 1;
+   for (temp = user->posts; temp->next != NULL; temp = temp->next, i++)
+   {
+      if (number == i + 1)
       {
-         free_post = temp->next;
+         to_delete = temp->next;
          temp->next = temp->next->next;
-         free_post->next = NULL;
-         free(free_post);
+         free(to_delete);
          return true;
       }
    }
-   // case 4: post position isn't found
+   
+   // Case 4: Invalid position
    return false;
 }
 
@@ -349,46 +302,43 @@ void display_all_posts(user_t *users)
 }
 
 /*
-   Fucntion that free all users from the database before quitting the application.
+   Function that frees all users from the database before quitting the application.
 */
 void teardown(user_t *users)
 {
-   user_t *temp;
-   friend_t *friend_temp;
-   post_t *post_temp;
+   user_t *current_user;
+   user_t *next_user;
+   friend_t *current_friend;
+   friend_t *next_friend;
+   post_t *current_post;
+   post_t *next_post;
 
-   // looping over each user
-   for (temp = users; users != NULL;)
+   current_user = users;
+   while (current_user != NULL)
    {
-      // looping over each friend of each user
-      for (friend_temp = users->friends; friend_temp != NULL;)
+      // Free all friends of current user
+      current_friend = current_user->friends;
+      while (current_friend != NULL)
       {
-         users->friends = users->friends->next;
-         free(friend_temp);
-         friend_temp = users->friends;
+         next_friend = current_friend->next;
+         free(current_friend);
+         current_friend = next_friend;
       }
 
-      // looping over each post of each user
-      for (post_temp = users->posts; post_temp != NULL;)
+      // Free all posts of current user
+      current_post = current_user->posts;
+      while (current_post != NULL)
       {
-
-         users->posts = users->posts->next;
-         free(post_temp);
-         post_temp = users->posts;
+         next_post = current_post->next;
+         free(current_post);
+         current_post = next_post;
       }
 
-      // freeing up current user
-      users = users->next;
-      free(temp);
-      temp = users;
-
+      // Move to next user and free current user
+      next_user = current_user->next;
+      free(current_user);
+      current_user = next_user;
    }
-
-   free(temp);
-   free(friend_temp);
-   free(post_temp);
-
-
 }
 
 /*
@@ -468,22 +418,19 @@ void main_menu()
    printf("3. Exit\n\n");
 }
 
-// checks if a friend exists, returns true if they do, otherwise false
+/* Function that checks if a friend exists in a user's friend list */
 _Bool friend_exist(user_t *user, char *friend)
 {
-
-   friend_t *temp = malloc(sizeof(friend_t));
-   assert(temp != NULL);
+   friend_t *temp;
 
    for (temp = user->friends; temp != NULL; temp = temp->next)
    {
-      // if the friend exists
       if (strcmp(temp->username, friend) == 0)
       {
          return true;
       }
    }
-   // they don't exist
+   
    return false;
 }
 
@@ -515,31 +462,24 @@ void lower(char *name)
 user_t *find_user2(user_t *users, const char *username)
 {
    char temp_name[30];
-   char main_name[30];
+   char search_name[30];
+   user_t *temp;
 
-   user_t *temp = malloc(sizeof(user_t));
-   assert(temp != NULL);
+   // Copy search username to avoid modifying the const parameter
+   strcpy(search_name, username);
+   lower(search_name);
 
-   if (users == NULL)
-      temp = NULL;
+   for (temp = users; temp != NULL; temp = temp->next)
+   {
+      // Copy current username for case-insensitive comparison
+      strcpy(temp_name, temp->username);
+      lower(temp_name);
 
-   else
-      for (temp = users; temp != NULL; temp = temp->next)
+      if (strcmp(temp_name, search_name) == 0)
       {
-
-         // we store in new variable since we dont want to modify original expressio (temp->username)
-         //  The username is a const meaning we cant chnage, this copy it elsewhere
-         strcpy(temp_name, temp->username);
-         strcpy(main_name, username);
-
-         lower(temp_name);
-         lower(main_name);
-
-         if (strcmp(temp_name, main_name) == 0)
-         {
-            return temp;
-         }
+         return temp;
       }
-   temp = NULL;
-   return temp;
+   }
+   
+   return NULL;
 }

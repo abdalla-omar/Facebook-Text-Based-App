@@ -1,18 +1,18 @@
-/********* main.c *********/
+/*
+ * Text-Based Facebook Application
+ * A social network simulation with users, posts, and friendships
+ */
 
-// Includes go here
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "a3_nodes.h"
-#include "a3_functions.h"
+#include "facebook_types.h"
+#include "facebook_functions.h"
 
 int main()
 {
-    /* THIS CODE WILL LOAD THE DATABASE OF USERS FROM THE FILE
-       AND GENERATE THE STARTING LINKED LIST.
-    */
+    /* Load the initial user database from CSV file */
     FILE *csv_file = fopen("user_details.csv", "r");
     if (csv_file == NULL)
     {
@@ -24,49 +24,45 @@ int main()
 
     fclose(csv_file);
 
-    /* IMPORTANT: You must use the users linked list created in the code above.
-                  Any new users should be added to that linked list.
-    */
-
-    // Your solution goes here
-    _Bool condition = true;         // Keepign the main menu alive
-    _Bool condition2 = true;        // Keepign the sub menu of choice 2 alive
-    _Bool condition3 = true;        // Keepign the sub menu of choice 3 alive
-    _Bool subc2_terminate = true;   // to reset termination of sub choices 2 & 3 in option 3
-    _Bool subc3_terminate = true;   // to reset termination of sub choice 4 in option 3
-    _Bool manage_user_alive = true; // to keep user manage account alive
-    unsigned short int main_option; // Main frame selection
-    unsigned short int option;      // user ediditing sub menu
-    unsigned short int option2;     // for sub menu choice is choice 2
-    unsigned short int option3;     // for sub menu choice is choice 3
-    char name[30];                  // to store name
-    char pass[15];                  // to store pass
+    /* Main application variables and logic */
+    _Bool main_menu_active = true;
+    _Bool posts_menu_active = true;
+    _Bool friends_menu_active = true;
+    _Bool posts_submenu_active = true;
+    _Bool friends_submenu_active = true;
+    _Bool user_session_active = true;
+    unsigned short int main_choice;
+    unsigned short int user_choice;
+    unsigned short int posts_choice;
+    unsigned short int friends_choice;
+    char username[30];
+    char password[15];
 
     printf("\n**********************************************\n");
     printf("\t Welcome to Text-Based Facebook \n");
     printf("**********************************************\n\n");
 
     // infinite loop to keep regenerating the menu options
-    while (condition)
+    while (main_menu_active)
     {
-        manage_user_alive = true;
+        user_session_active = true;
 
         main_menu();
         printf("Enter your choice: ");
-        scanf("%d", &main_option);
+        scanf("%d", &main_choice);
 
-        switch (main_option)
+        switch (main_choice)
         {
         case 1:
             printf("\nEnter a username: ");
-            scanf("%s", &name);
+            scanf("%s", username);
 
-            if (find_user2(users, name) == NULL)
+            if (find_user2(users, username) == NULL)
             {
                 printf("Enter up to 15 characters password: ");
-                scanf("%s", &pass);
+                scanf("%s", password);
 
-                users = add_user(users, name, pass);
+                users = add_user(users, username, password);
                 printf("\n**** User Added! ****\n");
             }
             else
@@ -76,58 +72,58 @@ int main()
 
         case 2:
             printf("Enter username: ");
-            scanf("%s", &name);
+            scanf("%s", username);
             printf("Enter password: ");
-            scanf("%s", &pass);
+            scanf("%s", password);
 
             // look for user
-            user_t *check = find_user(users, name);
+            user_t *check = find_user(users, username);
 
             if (check == NULL)
                 printf("\nUser not found!\n");
 
-            else if (check != NULL && strcmp(check->password, pass) != 0)
+            else if (check != NULL && strcmp(check->password, password) != 0)
                 printf("\nUser & password don't match!\n");
-            else if (check != NULL && strcmp(check->password, pass) == 0)
+            else if (check != NULL && strcmp(check->password, password) == 0)
             {
                 printf("\n**********************************\n");
                 printf("\t Welcome %s \t\n", check->username);
                 printf("**********************************\n");
 
                 // User frame
-                while (manage_user_alive)
+                while (user_session_active)
                 {
-                    condition2 = true;
-                    condition3 = true;
-                    subc2_terminate = true;
-                    subc3_terminate = true;
+                    posts_menu_active = true;
+                    friends_menu_active = true;
+                    posts_submenu_active = true;
+                    friends_submenu_active = true;
 
                     print_menu();
                     printf("Enter your choice: ");
-                    scanf("%d", &option);
+                    scanf("%d", &user_choice);
 
                     // Insuring that user inputs appropriate choices
-                    while (option > 5 || option < 1)
+                    while (user_choice > 5 || user_choice < 1)
                     {
                         printf("Invalid choice. Please try again.\n");
                         print_menu();
                         printf("Enter your choice: ");
-                        scanf("%d", &option);
+                        scanf("%d", &user_choice);
                     }
 
                     //  All 5 options
-                    switch (option)
+                    switch (user_choice)
                     {
                     case 1:
 
                         printf("\nEnter a new password that's up to 15 charecters: ");
-                        scanf("%s", &pass);
-                        strcpy(check->password, pass);
+                        scanf("%s", password);
+                        strcpy(check->password, password);
                         printf("\n**** Password changed! ****\n\n");
                         break;
 
                     case 2:
-                        while (subc2_terminate)
+                        while (posts_submenu_active)
                         {
                             // If user has posts
                             if (check->posts != NULL)
@@ -139,26 +135,26 @@ int main()
                             else if (check->posts == NULL)
                             {
                                 printf("\n---------------------------------\n");
-                                printf("\t%s's posts\n", name);
-                                printf("No posts available for %s", name);
+                                printf("\t%s's posts\n", username);
+                                printf("No posts available for %s", username);
                                 printf("\n---------------------------------\n");
                             }
-                            while (condition2)
+                            while (posts_menu_active)
                             {
 
                                 printf("\n1. Add a new user post\n");
                                 printf("2. Remove a users post\n");
                                 printf("3. Return to main menu\n");
                                 printf("\nYour choice: ");
-                                scanf("%d", &option2);
+                                scanf("%d", &posts_choice);
 
-                                switch (option2)
+                                switch (posts_choice)
                                 {
                                 case 1:
                                     // to store new element
                                     char new_post[250];
                                     printf("Enter your post content: ");
-                                    scanf(" %[^\n]s", new_post); // Don't use & operand bc we have an array
+                                    scanf(" %[^\n]s", new_post);
                                     add_post(check, new_post);
                                     printf("Post added to your profile.");
                                     printf("\n-----------------------\n");
@@ -183,8 +179,8 @@ int main()
                                         if (check->posts == NULL)
                                         {
                                             printf("\n---------------------------------\n");
-                                            printf("\t%s's posts\n", name);
-                                            printf("No posts available for %s", name);
+                                            printf("\t%s's posts\n", username);
+                                            printf("No posts available for %s", username);
                                             printf("\n---------------------------------\n");
                                         }
                                     }
@@ -192,18 +188,18 @@ int main()
                                     else if (remove == false)
                                     {
                                         printf("Invalid post's number.");
-                                        condition2 = false;
-                                        subc2_terminate = false; // to break out of choice 2 loop
+                                        posts_menu_active = false;
+                                        posts_submenu_active = false; // to break out of choice 2 loop
                                     }
                                     break;
                                 case 3:
-                                    condition2 = false;
-                                    subc2_terminate = false; // to break out of choice 2 loop
+                                    posts_menu_active = false;
+                                    posts_submenu_active = false; // to break out of choice 2 loop
                                     break;
 
                                 default:
                                     printf("\nPlease enter a valid option between 1 to 3");
-                                    scanf("%d", &option2);
+                                    scanf("%d", &posts_choice);
 
                                     break;
                                 }
@@ -212,7 +208,7 @@ int main()
                         break;
 
                     case 3:
-                        while (subc3_terminate)
+                        while (friends_submenu_active)
                         {
                             // Option menu
                             printf("\n1. Display all user's friends\n");
@@ -221,17 +217,17 @@ int main()
                             printf("4. Display a friend's posts\n");
                             printf("5. return to main menu\n");
                             printf("\nYour choice: ");
-                            scanf("%d", &option3);
+                            scanf("%d", &friends_choice);
 
                             // sub menu edit friends option
-                            switch (option3)
+                            switch (friends_choice)
                             {
                             case 1:
                                 // case 1: user has no friends
                                 if (check->friends == NULL)
                                 {
-                                    printf("\nList of %s's friends:\n", name);
-                                    printf("\nNo friends available for %s.\n", name);
+                                    printf("\nList of %s's friends:\n", username);
+                                    printf("\nNo friends available for %s.\n", username);
                                 }
 
                                 // case 2: user has at least 1 friend
@@ -263,7 +259,7 @@ int main()
 
                             case 3:
 
-                                printf("\nList of %s's friends:\n", name);
+                                printf("\nList of %s's friends:\n", username);
                                 display_user_friends(check);
                                 char delete_friend_name[30];
 
@@ -316,13 +312,13 @@ int main()
 
                                 break;
                             case 5:
-                                condition3 = false;
-                                subc3_terminate = false; // to break out of choice 3 loop
+                                friends_menu_active = false;
+                                friends_submenu_active = false; // to break out of choice 3 loop
                                 break;
 
                             default:
                                 printf("\nPlease enter a valid option between 1 to 5: ");
-                                scanf("%d", &option3);
+                                scanf("%d", &friends_choice);
                                 break;
                             }
                         }
@@ -332,7 +328,7 @@ int main()
                         break;
 
                     case 5:
-                        manage_user_alive = false;
+                        user_session_active = false;
                         break;
 
                     default:
@@ -342,7 +338,7 @@ int main()
             }
             break;
         case 3:
-            condition = false;
+            main_menu_active = false;
             teardown(users);
             printf("\n*******************************************");
             printf("\nThank you for using Text-Based Facebook");
